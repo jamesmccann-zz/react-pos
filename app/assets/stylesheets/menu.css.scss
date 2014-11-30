@@ -1,0 +1,23 @@
+@import 'base/colours';
+
+.menu {
+  background-color: $flat-gray-1;
+  color: $grey-base;
+  border: 1px solid $flat-gray-2;
+  border-radius: 1px;
+}
+
+.item-button {
+  width: 25%;
+  height: 80px;
+  color: #fff;
+  float: left;
+  font-weight: 600;
+  letter-spacing: -1px;
+  padding: 5px;
+  &.emerald  { background-color: lighten($flat-emerald, 10%); }
+  &.carrot { background-color: lighten($flat-carrot, 10%); }
+  &.peter-river{ background-color: lighten($flat-peter-river, 10%); }
+  &.sunflower{ background-color: lighten($flat-sunflower, 10%); }
+}
+

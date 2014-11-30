@@ -1,0 +1,22 @@
+{
+  "name": "react-pos",
+  "version": "0.0.0",
+  "description": "Simple POS demo built with React",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "cd ./webpack && webpack -w",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "James McCann <jmccnz@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "react": "^0.12.1"
+  },
+  "private": true,
+  "devDependencies": {
+    "jsx-loader": "^0.12.2"
+  }
+}

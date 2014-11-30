@@ -1,0 +1,27 @@
+@import 'base/flex';
+@import 'base/colours';
+
+.sale {
+  background-color: $flat-gray-1;
+  color: $grey-base;
+  border: 1px solid $flat-gray-2;
+  border-radius: 3px;
+
+  .sale-items {
+    @include flexbox;
+    @include flex-direction(column);
+  }
+}
+
+.sale-row {
+  background-color: #fff;
+  padding: 10px 8px;
+  border-bottom: 1px solid $flat-gray-2;
+  @include flexbox;
+  @include flex-direction(row);
+
+  .name {
+    @include flex(1 0 0);
+  }
+}
+

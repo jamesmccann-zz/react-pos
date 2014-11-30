@@ -1,0 +1,21 @@
+@import 'base/flex';
+
+main#app {
+  min-width: 960px;
+  max-height: 760px;
+  @include flexbox;
+
+  .menu, .sale {
+    @include flex;
+  }
+
+  .menu {
+    margin-right: 10px;
+  }
+
+  .sale {
+    margin-left: 10px;
+  }
+}
+
+
