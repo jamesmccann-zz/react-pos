@@ -1,35 +1,49 @@
 /** @jsx React.DOM */
 
-var React = require('react');
+var React = require('react'),
+    _ = require('lodash')
+    moment = require('moment');
 
 var ITEMS = [
-  { name: 'Flat White', price_in_cents: 450, colour: 'carrot' },
-  { name: 'Long Black', price_in_cents: 300, colour: 'carrot' },
-  { name: 'Machiatto', price_in_cents: 350, colour: 'carrot' },
-  { name: 'Milkshake', price_in_cents: 850, colour: 'emerald' },
-  { name: 'Milk', price_in_cents: 400, colour: 'emerald' },
-  { name: 'Chicken', price_in_cents: 450, colour: 'sunflower' }
+  { id: 1, name: 'Flat White', price_in_cents: 450, image_name: 'flat_white.png', colour: '#997252' },
+  { id: 2, name: 'Long Black', price_in_cents: 300, image_name: 'long_black.png', colour: '#592F16' },
+  { id: 3, name: 'Cappuccino', price_in_cents: 350, image_name: 'cappuccino.png', colour: '#855442' },
+  { id: 4, name: 'Hot Chocolate', price_in_cents: 850, image_name: 'hot_chocolate.png', colour: '#8D6A59'},
+  { id: 5, name: 'Fruit Muesli', price_in_cents: 400, image_name: 'fruit_muesli.png', colour: '#FC7E56'},
+  { id: 6, name: 'Berry Delight', price_in_cents: 450, image_name: 'berry_delight.png', colour: '#E82523'},
+  { id: 7, name: 'Eggs on Sourdough', price_in_cents: 450, image_name: 'eggs_on_sourdough.png', colour: '#EB8412'},
+  { id: 8, name: 'Pancake Stack', price_in_cents: 450, image_name: 'pancake_stack.png', colour: '#B0660A'},
+  { id: 9, name: 'Vege Salad', price_in_cents: 450, image_name: 'vege_salad.png', colour: '#C45FA8'}
 ]
 
 var ItemButton = React.createClass({
   render: function() {
-    var classNames = 'item-button ' + this.props.colour;
+    var classNames = 'item-button ';
+    var price = '$'+(this.props.item.price_in_cents / 100.0);
+    var nameStyle = {
+      color: this.props.item.colour
+    }
+
     return (
       <div className={classNames} onClick={this.props.handleClick}>
-        <span className="item-name">{this.props.name.toUpperCase()}</span>
+        <img src={"/assets/menu_items/" + this.props.item.image_name} />
+        <div className="item-detail">
+          <span className="item-name" style={nameStyle}>
+            {this.props.item.name}
+          </span>
+        </div>
       </div>);
   }
 });
 
 var Menu = React.createClass({
   handleItemClicked: function(index) {
-    this.props.onItemSelected(this.props.items[index]);
+    this.props.onAddItemSelected(this.props.items[index]);
   },
   render: function() {
     var t = this, itemButtons = [];
     this.props.items.forEach(function(item, index) {
-      itemButtons.push(<ItemButton name={item.name} price={'$'+(item.price_in_cents / 100.0)}
-                                   colour={item.colour} handleClick={t.handleItemClicked.bind(t, index)} />);
+      itemButtons.push(<ItemButton item={item} handleClick={t.handleItemClicked.bind(t, index)} />);
     });
     return (
       <div className="menu">
@@ -44,11 +58,25 @@ var Menu = React.createClass({
  */
 
 var SaleRow = React.createClass({
+  handleQuantitySubtractClicked: function() {
+    this.props.onRemoveItemSelected(_.last(this.props.items));
+  },
+  handleQuantityAddClicked: function() {
+    this.props.onAddItemSelected(_.last(this.props.items));
+  },
   render: function() {
+    var item = _.first(this.props.items);
+    var quantity = this.props.items.length;
+
     return (
       <div className="sale-row">
-        <div className="name">{this.props.item.name}</div>
-        <div>{'$'+(this.props.item.price_in_cents / 100.0)}</div>
+        <div className="name">{item.name}</div>
+        <div className="quantity-btns">
+          <div className="quantity-btn quantity-btn-minus" onClick={this.handleQuantitySubtractClicked}></div>
+          <div className="quantity">{quantity}</div>
+          <div className="quantity-btn quantity-btn-plus" onClick={this.handleQuantityAddClicked}></div>
+        </div>
+        <div className="price">{'$'+(item.price_in_cents * quantity / 100.0).toFixed(2)}</div>
       </div>
     );
   }
@@ -57,12 +85,16 @@ var SaleRow = React.createClass({
 var Sale = React.createClass({
   render: function() {
     rows = [];
-    this.props.items.forEach(function(item) {
-      rows.push(<SaleRow item={item} />);
-    });
+    _.values(_.groupBy(this.props.items, 'id')).forEach(function(items) {
+      rows.push(<SaleRow items={items}
+                         onAddItemSelected={this.props.onAddItemSelected}
+                         onRemoveItemSelected={this.props.onRemoveItemSelected}
+                />);
+    }.bind(this));
 
     return (
       <div className={'sale'}>
+        <div className={'sale-header'}></div>
         <div className={'sale-items'}>
           {rows}
         </div>
@@ -77,14 +109,21 @@ var App = React.createClass({
       selectedItems: []
     };
   },
-  onItemSelected: function(item) {
-    this.setState({selectedItems: this.state.selectedItems.concat(item)});
+  addItem: function(item) {
+    var saleItem = _.cloneDeep(item);
+    _.assign(saleItem, { timestamp: moment() });
+    this.setState({selectedItems: this.state.selectedItems.concat(saleItem)});
+  },
+  removeItem: function(item) {
+    this.setState({
+      selectedItems: _.pull(this.state.selectedItems, item)
+    });
   },
   render: function() {
     return (
       <main id="app">
-        <Menu items={ITEMS} onItemSelected={this.onItemSelected} />
-        <Sale items={this.state.selectedItems} />
+        <Menu items={ITEMS} onAddItemSelected={this.addItem} />
+        <Sale items={this.state.selectedItems} onAddItemSelected={this.addItem} onRemoveItemSelected={this.removeItem} />
       </main>
     );
   }

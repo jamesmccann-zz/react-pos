@@ -13,6 +13,8 @@
   "author": "James McCann <jmccnz@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "lodash": "^2.4.1",
+    "moment": "^2.8.4",
     "react": "^0.12.1"
   },
   "private": true,
