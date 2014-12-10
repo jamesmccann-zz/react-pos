@@ -1,0 +1,23 @@
+@import '../mixins/colours';
+
+.btn {
+  padding: 10px 8px;
+  background-color: $btn-default;
+  border-radius: 3px;
+  text-align: center;
+  color: $white;
+
+  &.default {
+    box-shadow: inset darken($btn-default, 15%) 0 -2px 0 0;
+    background-color: $btn-default;
+  }
+  &.success {
+    box-shadow: inset darken($btn-success, 15%) 0 -2px 0 0;
+    background-color: $btn-success;
+  }
+  &.danger {
+    box-shadow: inset darken($btn-danger, 25%) 0 -2px 0 0;
+    background-color: $btn-danger;
+  }
+}
+

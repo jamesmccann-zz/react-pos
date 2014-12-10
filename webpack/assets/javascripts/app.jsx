@@ -4,6 +4,8 @@ var React = require('react'),
     _ = require('lodash')
     moment = require('moment');
 
+var GST = 0.15;
+
 var ITEMS = [
   { id: 1, name: 'Flat White', price_in_cents: 450, image_name: 'flat_white.png', colour: '#997252' },
   { id: 2, name: 'Long Black', price_in_cents: 300, image_name: 'long_black.png', colour: '#592F16' },
@@ -53,10 +55,6 @@ var Menu = React.createClass({
   }
 });
 
-/**
- * @jsx React.DOM
- */
-
 var SaleRow = React.createClass({
   handleQuantitySubtractClicked: function() {
     this.props.onRemoveItemSelected(_.last(this.props.items));
@@ -82,6 +80,48 @@ var SaleRow = React.createClass({
   }
 });
 
+var SaleSummary = React.createClass({
+  render: function() {
+    var total = _.reduce(this.props.items, function(sum, item) {
+      return sum += item.price_in_cents;
+    }, 0);
+    var gst = total * 3 / 23;
+    var subtotal = total - gst;
+
+    return (
+      <div className="sale-summary">
+        <table className="summary-table">
+          <tr>
+            <td>Sub-total</td>
+            <td className="right subtotal">{'$'+(subtotal / 100).toFixed(2)}</td>
+          </tr>
+          <tr className="divider">
+            <td>GST</td>
+            <td className="right gst">{'$'+(gst / 100).toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td>TOTAL TO PAY</td>
+            <td className="right total">{'$'+(total / 100).toFixed(2)}</td>
+          </tr>
+        </table>
+      </div>
+    );
+  }
+});
+
+var SaleControls = React.createClass({
+  render: function() {
+    return (
+      <div className="sale-controls">
+        <div className="sale-btn btn danger">VOID</div>
+        <div className="sale-btn btn default">DISCOUNT</div>
+        <div className="sale-btn btn default">NOTES</div>
+        <div className="sale-btn btn success">PAY</div>
+      </div>
+    );
+  }
+});
+
 var Sale = React.createClass({
   render: function() {
     rows = [];
@@ -93,11 +133,13 @@ var Sale = React.createClass({
     }.bind(this));
 
     return (
-      <div className={'sale'}>
-        <div className={'sale-header'}></div>
-        <div className={'sale-items'}>
+      <div className="sale">
+        <div className="sale-header"></div>
+        <div className="sale-items">
           {rows}
         </div>
+        <SaleSummary items={this.props.items}/>
+        <SaleControls />
       </div>
     );
   }
@@ -130,7 +172,7 @@ var App = React.createClass({
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-  React.renderComponent(<App />, document.getElementById('react-app'));
+  React.renderComponent(<App />, document.getElementById('app-container'));
 });
 
 

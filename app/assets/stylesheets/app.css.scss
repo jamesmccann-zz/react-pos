@@ -1,8 +1,19 @@
-@import 'base/flex';
+@import 'mixins/flex';
+
+body {
+  margin: 0px;
+  height: 100vh;
+}
+
+#app-container {
+  padding: 58px 8px 20px 8px;
+  height: 100%;
+  @include flexbox;
+}
 
 main#app {
   min-width: 960px;
-  max-height: 760px;
+  @include flex;
   @include flexbox;
 
   .menu, .sale {

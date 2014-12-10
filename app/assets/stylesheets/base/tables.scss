@@ -1,0 +1,9 @@
+@import '../mixins/colours';
+
+table {
+  border-spacing: 0px;
+}
+
+td.right { text-align: right; }
+td.center { text-align: center; }
+

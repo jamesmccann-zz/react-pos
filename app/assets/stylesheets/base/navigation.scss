@@ -1,0 +1,15 @@
+@import '../mixins/colours';
+
+#navbar {
+  width: 100%;
+  height: 50px;
+  position: absolute;
+  background-color: #2B3E51;
+  color: $white;
+  vertical-align: middle;
+
+  h1 {
+    font-size: 1.25em;
+    padding: 10px 15px;
+  }
+}
