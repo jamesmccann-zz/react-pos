@@ -31,6 +31,8 @@
   font-size: 0.85em;
   background-color: $white;
   border-bottom: 1px solid $grey-base-border;
+  position: relative;
+  z-index: 2;
   @include flexbox;
   @include flex-direction(row);
 
@@ -52,6 +54,26 @@
       margin: 0px 16px;
     }
   }
+}
+
+.sale-row-enter {
+  margin-top: -60px;
+  z-index: 1;
+  transition: margin-top .1s ease-in;
+}
+
+.sale-row-enter.sale-row-enter-active {
+  margin-top: 0px;
+}
+
+.sale-row-leave{
+  margin-top: -60px;
+  z-index: 1;
+  transition: margin-top .1s ease-in;
+}
+
+.sale-row-leave.sale-row-enter-active {
+  margin-top: 0px;
 }
 
 .quantity-btn {

@@ -1,8 +1,9 @@
 /** @jsx React.DOM */
 
-var React = require('react'),
+var React = require('react/addons'),
     _ = require('lodash')
-    moment = require('moment');
+    moment = require('moment'),
+    ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
 var GST = 0.15;
 
@@ -43,10 +44,10 @@ var Menu = React.createClass({
     this.props.onAddItemSelected(this.props.items[index]);
   },
   render: function() {
-    var t = this, itemButtons = [];
+    var itemButtons = [];
     this.props.items.forEach(function(item, index) {
-      itemButtons.push(<ItemButton item={item} handleClick={t.handleItemClicked.bind(t, index)} />);
-    });
+      itemButtons.push(<ItemButton key={'item-button-' + index} item={item} handleClick={this.handleItemClicked.bind(this, index)} />);
+    }.bind(this));
     return (
       <div className="menu">
         {itemButtons}
@@ -67,15 +68,15 @@ var SaleRow = React.createClass({
     var quantity = this.props.items.length;
 
     return (
-      <div className="sale-row">
-        <div className="name">{item.name}</div>
-        <div className="quantity-btns">
-          <div className="quantity-btn quantity-btn-minus" onClick={this.handleQuantitySubtractClicked}></div>
-          <div className="quantity">{quantity}</div>
-          <div className="quantity-btn quantity-btn-plus" onClick={this.handleQuantityAddClicked}></div>
+        <div className="sale-row">
+          <div className="name">{item.name}</div>
+          <div className="quantity-btns">
+            <div className="quantity-btn quantity-btn-minus" onClick={this.handleQuantitySubtractClicked}></div>
+            <div className="quantity">{quantity}</div>
+            <div className="quantity-btn quantity-btn-plus" onClick={this.handleQuantityAddClicked}></div>
+          </div>
+          <div className="price">{'$'+(item.price_in_cents * quantity / 100.0).toFixed(2)}</div>
         </div>
-        <div className="price">{'$'+(item.price_in_cents * quantity / 100.0).toFixed(2)}</div>
-      </div>
     );
   }
 });
@@ -109,37 +110,32 @@ var SaleSummary = React.createClass({
   }
 });
 
-var SaleControls = React.createClass({
-  render: function() {
-    return (
-      <div className="sale-controls">
-        <div className="sale-btn btn danger">VOID</div>
-        <div className="sale-btn btn default">DISCOUNT</div>
-        <div className="sale-btn btn default">NOTES</div>
-        <div className="sale-btn btn success">PAY</div>
-      </div>
-    );
-  }
-});
-
 var Sale = React.createClass({
   render: function() {
     rows = [];
-    _.values(_.groupBy(this.props.items, 'id')).forEach(function(items) {
+    _.values(_.groupBy(this.props.items, 'id')).forEach(function(items, index) {
       rows.push(<SaleRow items={items}
+                         key={'sale-row-' + index}
                          onAddItemSelected={this.props.onAddItemSelected}
-                         onRemoveItemSelected={this.props.onRemoveItemSelected}
-                />);
+                         onRemoveItemSelected={this.props.onRemoveItemSelected} />
+      );
     }.bind(this));
 
     return (
       <div className="sale">
         <div className="sale-header"></div>
         <div className="sale-items">
-          {rows}
+          <ReactCSSTransitionGroup transitionName="sale-row">
+            {rows}
+          </ReactCSSTransitionGroup>
         </div>
         <SaleSummary items={this.props.items}/>
-        <SaleControls />
+        <div className="sale-controls">
+          <div className="sale-btn btn danger" onClick={this.props.onVoidSalePressed}>VOID</div>
+          <div className="sale-btn btn default">DISCOUNT</div>
+          <div className="sale-btn btn default">NOTES</div>
+          <div className="sale-btn btn success">PAY</div>
+        </div>
       </div>
     );
   }
@@ -161,18 +157,28 @@ var App = React.createClass({
       selectedItems: _.pull(this.state.selectedItems, item)
     });
   },
+  removeItems: function() {
+    this.setState({
+      selectedItems: []
+    }, function(){
+      this.forceUpdate();
+    });
+  },
   render: function() {
     return (
       <main id="app">
         <Menu items={ITEMS} onAddItemSelected={this.addItem} />
-        <Sale items={this.state.selectedItems} onAddItemSelected={this.addItem} onRemoveItemSelected={this.removeItem} />
+        <Sale items={this.state.selectedItems}
+              onAddItemSelected={this.addItem}
+              onRemoveItemSelected={this.removeItem}
+              onVoidSalePressed={this.removeItems} />
       </main>
     );
   }
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-  React.renderComponent(<App />, document.getElementById('app-container'));
+  React.render(<App />, document.getElementById('app-container'));
 });
 
 
