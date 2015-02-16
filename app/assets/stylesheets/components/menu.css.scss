@@ -1,0 +1,10 @@
+@import '../mixins/colours';
+
+.menu {
+  background-color: $grey-base;
+  color: $white;
+  border: 1px solid $grey-base-border;
+  border-radius: 3px;
+}
+
+

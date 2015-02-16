@@ -1,0 +1,36 @@
+@import '../mixins/flex';
+@import '../mixins/colours';
+
+.sale {
+  background-color: $grey-base;
+  border: 1px solid $grey-base-border;
+  border-radius: 3px;
+  @include flexbox;
+  @include flex-direction(column);
+
+  .sale-header {
+    @include flex(1, 0, 0);
+    color: $white;
+    background: image-url('sale_header.png') no-repeat;
+    background-position: center;
+    background-size: cover;
+    border-bottom: 1px solid $grey-base-border;
+  }
+
+  .sale-items {
+    @include flex(2 0 0);
+    @include flex-direction(column);
+    overflow-y: scroll;
+  }
+
+}
+
+.sale-controls {
+  background-color: $white;
+  @include flexbox;
+
+  .sale-btn {
+    @include flex(1 0 0);
+    margin: 4px 12px;
+  }
+}

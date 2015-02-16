@@ -1,0 +1,26 @@
+@import '../mixins/colours';
+
+.sale-summary {
+  font-size: 0.85em;
+  padding: 14px 24px;
+  background-color: $white;
+  border-top: 1px solid $grey-base-border;
+
+  .summary-table {
+    td {
+      padding: 5px 0px 5px 5px;
+    }
+
+    tr.divider > td {
+      border-bottom: 1px solid $black;
+      padding-bottom: 10px;
+    }
+
+    & td:last-child {
+      width: 100px;
+    }
+
+    float: right;
+  }
+}
+
